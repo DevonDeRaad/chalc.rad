@@ -1,9 +1,11 @@
-#optimize denovo
+#
+#investigate missing data in the chlacophaps dataset
+
 #devtools::install_github("DevonDeRaad/RADstackshelpR")
 library(RADstackshelpR)
 
 #check out what's going on with missingness between samples
-vcf<-vcfR::read.vcfR("m3.vcf")
+vcf<-vcfR::read.vcfR("~/Desktop/chalcophaps.rad/m3.vcf")
 missing.by.sample(vcf)
 missing.by.snp(vcf)
 #we have 41 samples, with 4664 SNPs retained at 60% completeness, and 346 SNPs retained at 80% completeness
@@ -34,42 +36,8 @@ missing.by.snp(vcf)
 
 #by removing potential batch effect samples, we retain 31 samples with 10846 SNPs at 60% complete, 3912 SNPs at 80% complete
 
+sampling<-read.csv("chalc.sampling.csv")
 
+new.sampling<-sampling[sampling$id %in% colnames(vcf@gt),]
 
-setwd("/Users/devder/Desktop/chalcophaps.rad/")
-optimize_m(m3="m3.vcf",
-           m4="m4.vcf",
-           m5="m5.vcf",
-           m6="m6.vcf",
-           m7="m7.vcf")
- 
-
-
-
-
-
-
-
-setwd("/Users/devder/Desktop/hipposideros/")
-optimize_m(m3="m3.vcf",
-           m4="m4.vcf")
-
-vcf<-vcfR::read.vcfR("m3.vcf")
-missing.by.sample(vcf)
-
-missing.by.snp(vcf)
-vcfR::write.vcf(vcfr, "m3.filt.vcf")
-missing.by.snp(vcfr)
-setwd("/Users/devder/Desktop/aph.data/")
-optimize_m(m3="populations.snps.vcf")
-optimize_m(m3="m3.filt.vcf")
-
-hist(rowSums(is.na(vcf@gt))/ncol(vcf@gt))
-
-setwd("/Users/devder/Downloads/")
-optimize_m(m3="populations.snps.vcf")
-vcf<-vcfR::read.vcfR("populations.snps.vcf")
-vcf<-missing.by.sample(vcf, cutoff = .9)
-vcfR::write.vcf(vcf, "dummy.vcf")
-optimize_m(m3="dummy.vcf")
-
+new.sampling[,c(1,9,10)]
